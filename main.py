@@ -10,10 +10,10 @@ import signal
 is_windows = False
 
 try:
-    import gnureadline  
-except: 
+    import gnureadline
+except:
     is_windows = True
-    import pyreadline
+    import pyreadline3 as pyreadline
 
 
 def printlogo():
@@ -53,7 +53,7 @@ def cmdlist():
     pc.printout("fwersnumber\t")
     print("Get phone number of target followers")
     pc.printout("fwingsnumber\t")
-    print("Get phone number of users followed by target")    
+    print("Get phone number of users followed by target")
     pc.printout("hashtags\t")
     print("Get hashtags used by target")
     pc.printout("info\t\t")
