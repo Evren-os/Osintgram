@@ -36,7 +36,7 @@ class Osintgram:
 
 
     def __init__(self, target, is_file, is_json, is_cli, output_dir, clear_cookies):
-        self.output_dir = output_dir or self.output_dir        
+        self.output_dir = output_dir or self.output_dir
         u = config.getUsername()
         p = config.getPassword()
         self.clear_cookies(clear_cookies)
@@ -224,7 +224,7 @@ class Osintgram:
 
             if self.jsonDump:
                 json_data['captions'] = captions
-                json_file_name = self.output_dir + "/" + self.target + "_followings.json"
+                json_file_name = self.output_dir + "/" + self.target + "_captions.json"
                 with open(json_file_name, 'w') as f:
                     json.dump(json_data, f)
 
@@ -275,7 +275,7 @@ class Osintgram:
 
         pc.printout("Retrieving all comments, this may take a moment...\n")
         data = self.__get_feed__()
-        
+
         _comments = []
         t = PrettyTable(['POST ID', 'ID', 'Username', 'Comment'])
         t.align["POST ID"] = "l"
@@ -290,19 +290,19 @@ class Osintgram:
                 t.add_row([post_id, comment.get('user_id'), comment.get('user').get('username'), comment.get('text')])
                 comment = {
                         "post_id": post_id,
-                        "user_id":comment.get('user_id'), 
+                        "user_id":comment.get('user_id'),
                         "username": comment.get('user').get('username'),
                         "comment": comment.get('text')
                     }
                 _comments.append(comment)
-        
+
         print(t)
         if self.writeFile:
             file_name = self.output_dir + "/" + self.target + "_comment_data.txt"
             with open(file_name, 'w') as f:
                 f.write(str(t))
                 f.close()
-        
+
         if self.jsonDump:
             file_name_json = self.output_dir + "/" + self.target + "_comment_data.json"
             with open(file_name_json, 'w') as f:
@@ -335,7 +335,7 @@ class Osintgram:
             next_max_id = results.get('next_max_id')
 
         print("\n")
-            
+
         for user in _followers:
             u = {
                 'id': user['pk'],
@@ -511,7 +511,7 @@ class Osintgram:
         try:
             endpoint = 'users/{user_id!s}/full_detail_info/'.format(**{'user_id': self.target_id})
             content = self.api._call_api(endpoint)
-           
+
             data = content['user_detail']['user']
 
             pc.printout("[ID] ", pc.GREEN)
@@ -537,7 +537,7 @@ class Osintgram:
                 pc.printout(str(data['public_email']) + '\n')
             pc.printout("[HD PROFILE PIC] ", pc.GREEN)
             pc.printout(str(data['hd_profile_pic_url_info']['url']) + '\n')
-            if 'fb_page_call_to_action_id' in data and data['fb_page_call_to_action_id']: 
+            if 'fb_page_call_to_action_id' in data and data['fb_page_call_to_action_id']:
                 pc.printout("[FB PAGE] ", pc.RED)
                 pc.printout(str(data['connected_fb_page']) + '\n')
             if 'whatsapp_number' in data and data['whatsapp_number']:
@@ -566,7 +566,7 @@ class Osintgram:
                 }
                 if 'public_email' in data and data['public_email']:
                     user['email'] = data['public_email']
-                if 'fb_page_call_to_action_id' in data and data['fb_page_call_to_action_id']: 
+                if 'fb_page_call_to_action_id' in data and data['fb_page_call_to_action_id']:
                     user['connected_fb_page'] = data['fb_page_call_to_action_id']
                 if 'whatsapp_number' in data and data['whatsapp_number']:
                     user['whatsapp_number'] = data['whatsapp_number']
@@ -854,7 +854,7 @@ class Osintgram:
         else:
             pc.printout("How many photos you want to download (default all): ", pc.YELLOW)
             user_input = input()
-          
+
         try:
             if user_input == "":
                 pc.printout("Downloading all photos available...\n")
@@ -936,7 +936,7 @@ class Osintgram:
 
             else:
                 pc.printout("Sorry! No results found :-(\n", pc.RED)
-        
+
         except ClientError as e:
             error = json.loads(e.error_response)
             print(error['message'])
@@ -1067,9 +1067,9 @@ class Osintgram:
             if 'error_title' in error:
                 print(error['error_title'])
             if 'challenge' in error:
-                print("Please follow this link to complete the challenge: " + error['challenge']['url'])    
+                print("Please follow this link to complete the challenge: " + error['challenge']['url'])
             sys.exit(2)
-        
+
 
     def set_write_file(self, flag):
         if flag:
@@ -1175,7 +1175,7 @@ class Osintgram:
             return
 
         followers = []
-        
+
         try:
 
             pc.printout("Searching for emails of target followers... this can take a few minutes\n")
@@ -1196,7 +1196,7 @@ class Osintgram:
                 sys.stdout.write("\rCatched %i followers email" % len(followers))
                 sys.stdout.flush()
                 results = self.api.user_followers(str(self.target_id), rank_token=rank_token, max_id=next_max_id)
-                
+
                 for user in results.get('users', []):
                     u = {
                         'id': user['pk'],
@@ -1206,14 +1206,14 @@ class Osintgram:
                     followers.append(u)
 
                 next_max_id = results.get('next_max_id')
-            
+
             print("\n")
 
             results = []
-            
+
             pc.printout("Do you want to get all emails? y/n: ", pc.YELLOW)
             value = input()
-            
+
             if value == str("y") or value == str("yes") or value == str("Yes") or value == str("YES"):
                 value = len(followers)
             elif value == str(""):
@@ -1298,7 +1298,7 @@ class Osintgram:
                 followings.append(u)
 
             next_max_id = data.get('next_max_id')
-            
+
             while next_max_id:
                 results = self.api.user_following(str(self.target_id), rank_token=rank_token, max_id=next_max_id)
 
@@ -1311,12 +1311,12 @@ class Osintgram:
                     followings.append(u)
 
                 next_max_id = results.get('next_max_id')
-        
+
             results = []
-            
+
             pc.printout("Do you want to get all emails? y/n: ", pc.YELLOW)
             value = input()
-            
+
             if value == str("y") or value == str("yes") or value == str("Yes") or value == str("YES"):
                 value = len(followings)
             elif value == str(""):
@@ -1347,11 +1347,11 @@ class Osintgram:
                     if len(results) > value:
                         break
                     results.append(follow)
-        
+
         except ClientThrottledError as e:
             pc.printout("\nError: Instagram blocked the requests. Please wait a few minutes before you try again.", pc.RED)
             pc.printout("\n")
-        
+
         print("\n")
 
         if len(results) > 0:
@@ -1385,7 +1385,7 @@ class Osintgram:
     def get_fwingsnumber(self):
         if self.check_private_profile():
             return
-       
+
         try:
 
             pc.printout("Searching for phone numbers of users followed by target... this can take a few minutes\n")
@@ -1404,7 +1404,7 @@ class Osintgram:
                 followings.append(u)
 
             next_max_id = data.get('next_max_id')
-            
+
             while next_max_id:
                 results = self.api.user_following(str(self.target_id), rank_token=rank_token, max_id=next_max_id)
 
@@ -1417,12 +1417,12 @@ class Osintgram:
                     followings.append(u)
 
                 next_max_id = results.get('next_max_id')
-       
+
             results = []
-        
+
             pc.printout("Do you want to get all phone numbers? y/n: ", pc.YELLOW)
             value = input()
-            
+
             if value == str("y") or value == str("yes") or value == str("Yes") or value == str("YES"):
                 value = len(followings)
             elif value == str(""):
@@ -1457,7 +1457,7 @@ class Osintgram:
         except ClientThrottledError as e:
             pc.printout("\nError: Instagram blocked the requests. Please wait a few minutes before you try again.", pc.RED)
             pc.printout("\n")
-        
+
         print("\n")
 
         if len(results) > 0:
@@ -1511,7 +1511,7 @@ class Osintgram:
                 followings.append(u)
 
             next_max_id = data.get('next_max_id')
-            
+
             while next_max_id:
                 results = self.api.user_following(str(self.target_id), rank_token=rank_token, max_id=next_max_id)
 
@@ -1524,12 +1524,12 @@ class Osintgram:
                     followings.append(u)
 
                 next_max_id = results.get('next_max_id')
-        
+
             results = []
-            
+
             pc.printout("Do you want to get all phone numbers? y/n: ", pc.YELLOW)
             value = input()
-            
+
             if value == str("y") or value == str("yes") or value == str("Yes") or value == str("YES"):
                 value = len(followings)
             elif value == str(""):
@@ -1608,7 +1608,7 @@ class Osintgram:
             comments = self.__get_comments__(post['id'])
             for comment in comments:
                 print(comment['text'])
-                
+
                 # if not any(u['id'] == comment['user']['pk'] for u in users):
                 #     user = {
                 #         'id': comment['user']['pk'],
